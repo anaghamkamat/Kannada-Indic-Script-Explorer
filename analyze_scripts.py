@@ -2,53 +2,72 @@
 import pandas as pd
 import datetime
 
-# Load the dataset
-try:
-    df = pd.read_csv("df_iso15924_scripts.tsv", sep="\t")
-except FileNotFoundError:
-    print("Error: df_iso15924_scripts.tsv not found.")
-    exit()
+def load_dataset(filepath="df_iso15924_scripts.tsv"):
+    """Loads the ISO 15924 dataset."""
+    try:
+        df = pd.read_csv(filepath, sep="\t")
+        return df
+    except FileNotFoundError:
+        return None
 
-# List of Indic/Brahmic script codes to filter
-indic_scripts = [
-    'Brah', 'Deva', 'Knda', 'Taml', 'Telu', 'Mlym', 'Beng', 'Gujr', 
-    'Guru', 'Orya', 'Sinh', 'Tibt', 'Khmr', 'Java', 'Bali', 'Newa', 
-    'Gran', 'Sidd'
-]
+def get_indic_scripts_list():
+    """Returns a list of ISO codes for Indic/Brahmic scripts."""
+    return [
+        'Brah', 'Deva', 'Knda', 'Taml', 'Telu', 'Mlym', 'Beng', 'Gujr', 
+        'Guru', 'Orya', 'Sinh', 'Tibt', 'Khmr', 'Java', 'Bali', 'Newa', 
+        'Gran', 'Sidd'
+    ]
 
-# Filter the dataframe
-df_indic = df[df['Code'].isin(indic_scripts)].copy()
-df_indic['Date'] = pd.to_datetime(df_indic['Date'])
-df_indic = df_indic.sort_values('Date')
-
-print("\n--- Indian/Brahmic Script Standardization Timeline ---")
-print(f"{'Date':<12} | {'Code':<5} | {'Name'}")
-print("-" * 50)
-
-for _, row in df_indic.iterrows():
-    date_str = row['Date'].strftime('%Y-%m-%d')
-    print(f"{date_str:<12} | {row['Code']:<5} | {row['English Name']}")
-
-print("-" * 50)
-
-# Try matplotlib visualization
-try:
-    import matplotlib.pyplot as plt
-    import matplotlib.dates as mdates
+def get_indic_script_growth(df):
+    """
+    Calculates the cumulative count of registered Indic scripts over time.
+    Returns a DataFrame with 'Date' and 'Cumulative Count'.
+    """
+    indic_scripts = get_indic_scripts_list()
+    df_indic = df[df['Code'].isin(indic_scripts)].copy()
     
-    plt.figure(figsize=(10, 8))
-    plt.scatter(df_indic['Date'], df_indic['English Name'], color='teal', s=100)
-    plt.hlines(y=df_indic['English Name'], xmin=df_indic['Date'].min(), xmax=df_indic['Date'], color='skyblue', alpha=0.5)
-    plt.title('Timeline of Standardization: Indian & Brahmic Scripts (ISO 15924)', fontsize=14)
-    plt.xlabel('Date of ISO Registration/Standardization', fontsize=12)
-    plt.grid(axis='x', linestyle='--', alpha=0.7)
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
-    plt.gca().xaxis.set_major_locator(mdates.YearLocator(2))
-    plt.gcf().autofmt_xdate()
-    plt.tight_layout()
-    plt.savefig('kannada_script_timeline.png')
-    print("\n[SUCCESS] Timeline plot saved as 'kannada_script_timeline.png'")
+    # Convert date, handling potential errors or formats
+    df_indic['Date'] = pd.to_datetime(df_indic['Date'])
+    df_indic = df_indic.sort_values('Date')
+    
+    # Calculate cumulative count
+    df_indic['Count'] = 1
+    df_indic['Cumulative Count'] = df_indic['Count'].cumsum()
+    
+    return df_indic[['Date', 'Code', 'English Name', 'Cumulative Count']]
 
-except ImportError:
-    print("\n[INFO] 'matplotlib' not found. Skipping image generation.")
-    print("You can see the text-based timeline above.")
+def compare_kannada_latency(df):
+    """
+    Analyzes the time gap between the first major Indic script registration 
+    and Kannada's registration.
+    """
+    indic_scripts = get_indic_scripts_list()
+    df_indic = df[df['Code'].isin(indic_scripts)].copy()
+    df_indic['Date'] = pd.to_datetime(df_indic['Date'])
+    
+    # Find Kannada date
+    kannada_row = df_indic[df_indic['English Name'] == 'Kannada']
+    if kannada_row.empty:
+        return None
+        
+    kannada_date = kannada_row.iloc[0]['Date']
+    
+    # Calculate difference for all scripts relative to Kannada
+    df_indic['Days Difference'] = (df_indic['Date'] - kannada_date).dt.days
+    
+    # Sort by date
+    return df_indic.sort_values('Date')[['English Name', 'Date', 'Days Difference']]
+
+if __name__ == "__main__":
+    # Test the functions
+    df = load_dataset()
+    if df is not None:
+        print("Dataset loaded.")
+        growth = get_indic_script_growth(df)
+        print("\nGrowth Tail:\n", growth.tail())
+        
+        latency = compare_kannada_latency(df)
+        if latency is not None:
+            print("\nLatency Analysis (Head):\n", latency.head())
+    else:
+        print("Dataset not found during test.")

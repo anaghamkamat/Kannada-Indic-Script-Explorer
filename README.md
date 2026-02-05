@@ -1,33 +1,28 @@
-
 # 🏹 Kannada & Indic Script Explorer
 
 A comprehensive interactive dashboard to explore the history, art, and computational aspects of the **Kannada script** and other Indic writing systems. Built with **Python** and **Streamlit**.
 
 ## 🌟 Features
 
-### 1. 📊 Data Analysis
-- **Timeline Visualization**: Interactively explore when various Indic scripts (Kannada, Telugu, Devanagari, etc.) were standardized in ISO 15924.
-- **Highlighted Insights**: Visual emphasis on the Kannada script's timeline entry.
+### 1. 📊 Research Lab
+- **Script Evolution**: Timelines of Indic script standardization.
+- **Morphological Analysis**: Breaks down Kannada words into Aksharas (Swaras/Vyanjanas).
+- **Chandassu Calculator**: Analyzes poetic meter (Laghu/Guru).
+- **Script Similarity**: Compares Kannada and Telugu structures.
 
 ### 2. 🔡 Transliteration
-- **English to Kannada**: Type phonetically in English (e.g., "namaskara") and get the corresponding Kannada script output instantly.
-- **Rule-Based Engine**: Uses a custom mapping logic for vowels, consonants, and matras.
+- **English to Kannada**: Type phonetically (e.g., "namaskara").
+- **🔊 Text-to-Speech**: Listen to the transliterated output.
 
-### 3. 🎮 Gamified Learning (Quiz)
-- **Script Quiz**: Test your knowledge by identifying script codes (e.g., 'Knda', 'Deva').
-- **Customizable**: Choose the number of questions via the Sidebar.
-- **Scoring System**: Tracks your score and celebrates completion.
+### 3. 🎨 Creative Zone
+- **Kannada Digital Clock**: Live clock with Kannada numerals.
+- **Wisdom Generator**: Random Vachanas/Proverbs.
 
-### 4. 🎨 Creative Zone
-- **Kannada Digital Clock**: A live clock display using Kannada numerals (೦-೯).
-- **Wisdom Generator**: Get random "Nuggets of Wisdom" (Vachanas/Proverbs) displayed in beautiful UI cards.
-
-### 5. 🤖 Kannada AI & NLP Lab
-A dedicated section for Computational Linguistics experiments:
-- **NLP Toolkit**: Normalization, Tokenization, and Text Simplification tools.
-- **Classification Demo**: Categorize text into Sports, Politics, etc.
-- **Sentiment Analysis**: Detect positive/negative sentiment in Kannada text.
-- **Mock GenAI**: UI demonstrations for Chatbots, Voice Input, and Translation.
+### 4. 🤖 Kannada AI & NLP Lab
+- **🤖 Vachana Generator**: Generates new poetic lines using a Markov Chain model.
+- **Toolkit**: Rule-based Stemmer, Normalization, Tokenization.
+- **Models**: Topic Classification, Sentiment Analysis.
+- **Voice**: Mock Voice Input and Text-to-Speech demo.
 
 ## 🛠️ Installation
 
@@ -39,27 +34,24 @@ A dedicated section for Computational Linguistics experiments:
 pip install -r requirements.txt
 ```
 
-*(Note: `requirements.txt` should include `streamlit`, `pandas`, `matplotlib`)*
+*(Note: `requirements.txt` includes `streamlit`, `pandas`, `gTTS`)*
 
 ## 🚀 Usage
 
-Run the application using Streamlit:
+Run the application:
 
 ```bash
 streamlit run app.py
 ```
 
-The app will open in your default web browser at `http://localhost:8501`.
-
 ## 📂 Project Structure
 
-- `app.py`: Main application entry point containing the UI and logic.
-- `nlp_utils.py`: Helper library for NLP tasks (normalization, sentiment, etc.).
-- `df_iso15924_scripts.tsv`: Dataset containing ISO script codes and dates.
-- `kannada_matrix.py`: (Legacy) Script for matrix rain effect.
-- `transliterate.py`: Standalone script for transliteration logic.
+- `app.py`: Main application UI.
+- `nlp_utils.py`: Core logic for NLP, Morphology, and GenAI.
+- `analyze_scripts.py`: Data analysis logic.
+- `transliterate.py`: Transliteration engine.
+- `df_iso15924_scripts.tsv`: ISO Data.
 
 ## 🤝 Credits
 
-Developed with ❤️ using the Streamlit framework. 
-*Data Source: ISO 15924 Registration Authority.*
+Developed with ❤️ using Streamlit.
